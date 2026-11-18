@@ -3,7 +3,7 @@ import SkillCard from '@/components/SkillCard';
 
 export const metadata: Metadata = {
   title: 'About',
-  description: 'About Pascal Okezie and his technical skills.',
+  description: 'Background and technical skills of Pascal Okezie.',
 };
 
 const skillGroups = [
