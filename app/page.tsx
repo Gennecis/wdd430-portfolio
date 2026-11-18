@@ -1,18 +1,19 @@
 import ProjectList from '@/components/ProjectList';
 
-// TODO: replace with at least two projects you have actually built
 const projects = [
   {
-    title: 'Project One',
-    description: 'Describe what this project does.',
-    technologies: ['HTML', 'CSS', 'JavaScript'],
-    link: 'https://github.com/Gennecis/project1',
+    title: 'Teton Chamber of Commerce Testing',
+    description:
+      'Software testing project for the Teton Idaho Chamber of Commerce website (CSE 270), with Python tests for the site and its data service, run automatically by a GitHub Actions workflow.',
+    technologies: ['Python', 'HTML', 'CSS', 'JavaScript', 'GitHub Actions'],
+    link: 'https://github.com/Gennecis/cse270-teton',
   },
   {
-    title: 'Project Two',
-    description: 'Describe what this project does.',
-    technologies: ['React', 'JavaScript', 'CSS'],
-    link: 'https://github.com/Gennecis/project2',
+    title: 'Hello World Software',
+    description:
+      'A Hello World program in Python that walks through the full workflow between VS Code and GitHub, with a recorded demo video.',
+    technologies: ['Python', 'VS Code', 'Git', 'GitHub'],
+    link: 'https://github.com/Gennecis/Hello-World-Software',
   },
 ];
 
