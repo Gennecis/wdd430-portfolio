@@ -4,8 +4,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "WDD 430 Portfolio",
-  description: "My Next.js portfolio",
+  title: {
+    default: "Pascal Okezie | Portfolio",
+    template: "%s | Pascal Okezie",
+  },
+  description: "Portfolio of Pascal Okezie, a web developer building with Next.js, React and TypeScript.",
 };
 
 export default function RootLayout({

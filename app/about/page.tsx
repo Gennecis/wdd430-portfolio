@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import SkillCard from '@/components/SkillCard';
+
+export const metadata: Metadata = {
+  title: 'About',
+  description: 'About Pascal Okezie and his technical skills.',
+};
 
 const skillGroups = [
   { category: 'Front End', skills: ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'React', 'Next.js', 'Tailwind CSS'] },
