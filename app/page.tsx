@@ -9,11 +9,11 @@ const projects = [
     link: 'https://github.com/Gennecis/cse270-teton',
   },
   {
-    title: 'Hello World Software',
+    title: 'PlacePedia',
     description:
-      'A Hello World program in Python that walks through the full workflow between VS Code and GitHub, with a recorded demo video.',
-    technologies: ['Python', 'VS Code', 'Git', 'GitHub'],
-    link: 'https://github.com/Gennecis/Hello-World-Software',
+      'Search any place by name to see all matching locations on a map, with relevance scores, historical era, and a Wikipedia summary.',
+    technologies: ['JavaScript', 'HTML', 'CSS', 'Leaflet', 'Vite', 'Jest'],
+    link: 'https://github.com/Gennecis/PlacePedia',
   },
 ];
 
