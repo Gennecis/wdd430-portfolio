@@ -2,7 +2,7 @@
 
 A personal portfolio site built with Next.js (App Router), TypeScript and Tailwind CSS.
 
-**Live site:** _Vercel URL coming soon_
+**Live site:** https://wdd430-portfolio-swart-five.vercel.app/
 
 ## Pages
 
