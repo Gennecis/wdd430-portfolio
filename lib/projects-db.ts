@@ -1,3 +1,5 @@
+import { sql } from '@vercel/postgres';
+
 export type ProjectType = 'opensource' | 'school';
 
 export interface Project {
@@ -9,58 +11,60 @@ export interface Project {
   link?: string;
 }
 
-// In-memory data for now. This can move to a real database later.
-const projects: Project[] = [
-  {
-    id: 1,
-    title: 'PlacePedia',
-    description:
-      'Search any place by name to see all matching locations on a map, with relevance scores, historical era, and a Wikipedia summary.',
-    type: 'opensource',
-    technologies: ['JavaScript', 'HTML', 'CSS', 'Leaflet', 'Vite', 'Jest'],
-    link: 'https://github.com/Gennecis/PlacePedia',
-  },
-  {
-    id: 2,
-    title: 'Python Socket Chat',
-    description: 'A chat application built on Python sockets that lets multiple clients exchange messages through a server.',
-    type: 'opensource',
-    technologies: ['Python', 'Sockets'],
-    link: 'https://github.com/Gennecis/python-socket-chat',
-  },
-  {
-    id: 3,
-    title: 'Teton Chamber of Commerce Testing',
-    description:
-      'Software testing project for the Teton Idaho Chamber of Commerce website (CSE 270), with Python tests for the site and its data service, run automatically by a GitHub Actions workflow.',
-    type: 'school',
-    technologies: ['Python', 'HTML', 'CSS', 'JavaScript', 'GitHub Actions'],
-    link: 'https://github.com/Gennecis/cse270-teton',
-  },
-  {
-    id: 4,
-    title: 'Sacrament Meeting Planner',
-    description:
-      'A Next.js app for viewing, navigating and printing sacrament meeting programs, with typed data and API routes (WDD 430).',
-    type: 'school',
-    technologies: ['Next.js', 'TypeScript', 'Tailwind CSS'],
-    link: 'https://github.com/Gennecis/sacrament-meetings',
-  },
-  {
-    id: 5,
-    title: 'Car Shop',
-    description: 'Team project for CSE 341 building a web service for a car shop.',
-    type: 'school',
-    technologies: ['JavaScript', 'Node.js'],
-    link: 'https://github.com/Gennecis/Car-Shop',
-  },
-];
+const ITEMS_PER_PAGE = 4;
 
-export function getProjects(type?: string | null): Project[] {
-  if (!type) return projects;
-  return projects.filter((project) => project.type === type);
+interface ProjectRow {
+  id: number;
+  title: string;
+  description: string;
+  type: ProjectType;
+  technologies: string[];
+  link: string | null;
 }
 
-export function getProjectById(id: number): Project | undefined {
-  return projects.find((project) => project.id === id);
+/** Converts a database row to a Project, turning a NULL link into an absent one. */
+function toProject(row: ProjectRow): Project {
+  const { link, ...rest } = row;
+  return link ? { ...rest, link } : rest;
+}
+
+export async function getProjects(type?: string | null): Promise<Project[]> {
+  const { rows } = type
+    ? await sql<ProjectRow>`SELECT * FROM projects WHERE type = ${type} ORDER BY id`
+    : await sql<ProjectRow>`SELECT * FROM projects ORDER BY id`;
+  return rows.map(toProject);
+}
+
+export async function getProjectById(id: number): Promise<Project | null> {
+  const { rows } = await sql<ProjectRow>`SELECT * FROM projects WHERE id = ${id}`;
+  return rows[0] ? toProject(rows[0]) : null;
+}
+
+/** One page of projects whose title, description or technologies match the query. */
+export async function fetchFilteredProjects(query: string, currentPage: number): Promise<Project[]> {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const pattern = `%${query}%`;
+  const { rows } = await sql<ProjectRow>`
+    SELECT * FROM projects
+    WHERE
+      title ILIKE ${pattern} OR
+      description ILIKE ${pattern} OR
+      array_to_string(technologies, ' ') ILIKE ${pattern}
+    ORDER BY id
+    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+  `;
+  return rows.map(toProject);
+}
+
+/** Number of pages of projects that match the query. */
+export async function fetchProjectsPages(query: string): Promise<number> {
+  const pattern = `%${query}%`;
+  const { rows } = await sql<{ count: string }>`
+    SELECT COUNT(*) FROM projects
+    WHERE
+      title ILIKE ${pattern} OR
+      description ILIKE ${pattern} OR
+      array_to_string(technologies, ' ') ILIKE ${pattern}
+  `;
+  return Math.ceil(Number(rows[0].count) / ITEMS_PER_PAGE);
 }

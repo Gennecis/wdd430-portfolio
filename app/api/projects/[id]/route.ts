@@ -8,7 +8,7 @@ export async function GET(_request: NextRequest, ctx: RouteContext<'/api/project
     return Response.json({ error: 'Project id must be a number.' }, { status: 400 });
   }
 
-  const project = getProjectById(Number(id));
+  const project = await getProjectById(Number(id));
   if (!project) {
     return Response.json({ error: `Project ${id} was not found.` }, { status: 404 });
   }
