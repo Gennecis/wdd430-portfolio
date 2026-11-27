@@ -23,6 +23,12 @@ Projects are stored in a Neon Postgres database and read with `@vercel/postgres`
 npx vercel env pull .env.local
 ```
 
+Projects can be added at `/projects/create`, and edited or deleted from the cards on `/projects`. The forms use Server Actions in `app/lib/actions.ts`, which validate input with Zod before writing to the database. The table needs a `year_completed` column:
+
+```sql
+ALTER TABLE projects ADD COLUMN year_completed INTEGER;
+```
+
 ## Run locally
 
 ```bash

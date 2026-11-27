@@ -9,6 +9,7 @@ export interface Project {
   type: ProjectType;
   technologies: string[];
   link?: string;
+  yearCompleted?: number;
 }
 
 const ITEMS_PER_PAGE = 4;
@@ -20,12 +21,17 @@ interface ProjectRow {
   type: ProjectType;
   technologies: string[];
   link: string | null;
+  year_completed: number | null;
 }
 
-/** Converts a database row to a Project, turning a NULL link into an absent one. */
+/** Converts a database row to a Project, turning NULL columns into absent fields. */
 function toProject(row: ProjectRow): Project {
-  const { link, ...rest } = row;
-  return link ? { ...rest, link } : rest;
+  const { link, year_completed, ...rest } = row;
+  return {
+    ...rest,
+    ...(link ? { link } : {}),
+    ...(year_completed ? { yearCompleted: year_completed } : {}),
+  };
 }
 
 export async function getProjects(type?: string | null): Promise<Project[]> {
